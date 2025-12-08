@@ -1,0 +1,18 @@
+{
+  "name": "Tour Booking App Dev",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "postCreateCommand": "pip install -r requirements.txt",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.black-formatter"
+      ]
+    }
+  },
+  "forwardPorts": [8000, 8001],
+  "remoteUser": "vscode"
+}
