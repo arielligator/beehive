@@ -4,26 +4,52 @@
 # validate input data
 # prevent exposing sensitive information
 
-from pydantic import BaseModel
-from typing import Optional
+from pydantic import BaseModel, EmailStr
+from typing import Optional, List
 
 
-class TalentBase(BaseModel):
+# --- Department Schemas ---
+
+class DepartmentBase(BaseModel):
+    name: str
+
+class DepartmentOut(DepartmentBase):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+# --- Job Schemas ---
+
+class JobBase(BaseModel):
+    name: str
+
+class JobOut(JobBase):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+# --- Person Schemas ---
+
+class PersonBase(BaseModel):
     first_name: str
     last_name: str
     dob: Optional[str] = None
-    email: EmailStr
+    email: Optional[EmailStr] = None
     phone: Optional[str] = None
     address: Optional[str] = None
 
 
-class TalentCreate(TalentBase):
-    # For now, same as TalentBase – later we can add required fields
+class PersonCreate(PersonBase):
+    # For now, same as PersonBase – later we can add required fields
     pass
 
 
-class TalentOut(TalentBase):
+class PersonOut(PersonBase):
     id: int
+    departments: List[DepartmentOut] = []
+    jobs: List[JobOut] = []
 
     class Config:
-        orm_mode = True
+        from_attributes = True

@@ -6,6 +6,13 @@ import pandas as pd
 DB_PATH = Path("dummy_database.db")
 EXCEL_PATH = Path("dummy_database.xlsx")
 
+#helper function - convert empty/NaN values to None for proper Null handling
+def clean_value(value):
+    if pd.isna(value):
+        return None
+    cleaned = str(value).strip()
+    return cleaned if cleaned and cleaned.lower() != 'nan' else None
+
 def main():
     # connect to the database
     conn = sqlite3.connect(DB_PATH)
@@ -18,9 +25,9 @@ def main():
     for _, row in df.iterrows():
         first_name = str(row["NAME"]).strip()
         last_name = str(row["SURNAME"]).strip()
-        email = str(row.get("EMAIL", "")).strip()
-        phone  = str(row.get("PHONE", "")).strip()
-        address = str(row.get("ADDRESS", "")).strip()
+        email = clean_value(row.get("EMAIL"))
+        phone  = clean_value(row.get("PHONE"))
+        address = clean_value(row.get("ADDRESS"))
 
         # insert into people table
         cursor.execute(
@@ -83,8 +90,6 @@ def main():
                     """,
                     (person_id, job_id),
                 )
-
-        # TODO: import jobs
 
     conn.commit()
     conn.close()

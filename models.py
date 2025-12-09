@@ -3,31 +3,75 @@
 # control column types
 # handle reading/writing DB data
 # convert between python objects and sql rows
+# map python classes to SQLite tables
 
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Table, ForeignKey
+from sqlalchemy.orm import relationship
 from .database import Base
 
+# association / join tables (many to many)
+
+person_departments = Table(
+    "person_departments",
+    Base.metadata,
+    Column("person_id", Integer, ForeignKey("people.id"), primary_key=True),
+    Column("department_id", Integer, ForeignKey("departments.id"),primary_key=True),
+)
+
+person_jobs = Table(
+    "person_jobs",
+    Base.metadata,
+    Column("person_id", Integer, ForeignKey("people.id"), primary_key=True),
+    Column("job_id", Integer, ForeignKey("jobs.id"), primary_key=True),
+)
+
+
 # create talent model - turns each database row into a python object
-class Talent(Base):
-    __tablename__ = "talent"
+class Person(Base):
+    __tablename__ = "people"
 
     id = Column(Integer, primary_key=True, index=True)
-    first_name = Column(String)
-    last_name = Column(String)
-    dob = Column(String)
-    phone = Column(String)
-    email = Column(String)
-    address = Column(String)
+    first_name = Column(String, nullable=False)
+    last_name = Column(String, nullable=False)
+    dob = Column(Date, nullable=True)
+    phone = Column(String, nullable=True)
+    email = Column(String, nullable=True)
+    address = Column(String, nullable=True)
 
-# create pydantic schema - determines what API returns or accepts
-class TalentOut(BaseModel):
-    id: int
-    first_name: str
-    last_name: str
-    dob: str
-    phone: str
-    email: str
-    address: str
+    # relationships
+    departments = relationship(
+        "Department",
+        secondary=person_departments,
+        back_populates="people",
+        lazy="joined"
+    )
+    jobs = relationship(
+        "Job",
+        secondary=person_jobs,
+        back_populates="people",
+        lazy="joined",
+    )
 
-    class Config:
-        orm_mode = True
+class Department(Base):
+    __tablename__ = "departments"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, unique=True, nullable=True)
+
+    people = relationship(
+        "Person",
+        secondary=person_departments,
+        back_populates="departments"
+    )
+
+class Job(Base):
+    __tablename__ = "jobs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, unique=True, nullable=False)
+
+    people = relationship(
+        "Person",
+        secondary=person_jobs,
+        back_populates="jobs",
+    )

@@ -18,21 +18,29 @@ def read_root():
 
 # --- Talent Endpoints ---
 
-@app.get("/talent", response_model=List[schemas.TalentOut])
-def list_talent(db: Session = Depends(get_db)):
-    return db.query(models.Talent).all()
+@app.get("/people", response_model=List[schemas.PersonOut], tags=["People"])
+def list_people(db: Session = Depends(get_db)):
+    people = db.query(models.Person).all()
+    return people
 
-@app.get("/talent/{talent_id}", response_model=schemas.TalentOut)
-def get_talent(talent_id: int, db: Session = Depends(get_db)):
-    talent = db.query(models.Talent).filter(models.Talent.id == talent_id).first()
-    if not talent:
-        raise HTTPException(status_code=404, detail="Talent not found")
-    return talent
+@app.get("/people/{person_id}", response_model=schemas.PersonOut, tags=["People"])
+def get_person(person_id: int, db: Session = Depends(get_db)):
+    # get a single person by id
+    person = db.query(models.Person).filter(models.Person.id == person_id).first()
+    if not person:
+        raise HTTPException(status_code=404, detail="Person not found")
+    return person
 
-@app.post("/talent", response_model=schemas.TalentOut)
-def create_talent(talent_in: schemas.TalentCreate, db: Session = Depends(get_db)):
-    talent = models.Talent(**talent_in.model_dump())
-    db.add(talent)
+@app.post("/people", response_model=schemas.PersonOut, tags=["People"])
+def create_person(person_in: schemas.PersonCreate, db: Session = Depends(get_db)):
+    """
+    Create a new person.
+
+    Right now this only sets the core fields (name, contact info).
+    Later we can extend this to also attach departments and jobs.
+    """    
+    person = models.Person(**person_in.model_dump())
+    db.add(person)
     db.commit()
-    db.refresh(talent)
-    return talent
+    db.refresh(person)
+    return person
