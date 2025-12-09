@@ -25,6 +25,12 @@ person_jobs = Table(
     Column("job_id", Integer, ForeignKey("jobs.id"), primary_key=True),
 )
 
+person_works_with = Table(
+    "person_works_with",
+    Base.metadata,
+    Column("person_id", Integer, ForeignKey("people.id"), primary_key=True),
+    Column("works_with_id", Integer, ForeignKey("works_with.id"), primary_key=True),
+)
 
 # create talent model - turns each database row into a python object
 class Person(Base):
@@ -51,6 +57,12 @@ class Person(Base):
         back_populates="people",
         lazy="joined",
     )
+    works_with = relationship(
+        "Works With",
+        secondary=person_works_with,
+        back_populates="people",
+        lazy="joined",
+    )
 
 class Department(Base):
     __tablename__ = "departments"
@@ -74,4 +86,16 @@ class Job(Base):
         "Person",
         secondary=person_jobs,
         back_populates="jobs",
+    )
+
+class WorksWith(Base):
+    __tablename__ = "works_with"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, unique=True, nullable=True)
+
+    people = relationship(
+        "Person",
+        secondary=person_works_with,
+        back_populates="works_with"
     )

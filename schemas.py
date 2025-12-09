@@ -30,6 +30,18 @@ class JobOut(JobBase):
     class Config:
         from_attributes = True
 
+
+# --- Works With Schemas ---
+
+class WorksWithBase(BaseModel):
+    name: str
+
+class WorksWithOut(WorksWithBase):
+    id: int
+
+    class Config:
+        from_attributes = True
+
 # --- Person Schemas ---
 
 class PersonBase(BaseModel):
@@ -50,6 +62,7 @@ class PersonOut(PersonBase):
     id: int
     departments: List[DepartmentOut] = []
     jobs: List[JobOut] = []
+    works_with: List[WorksWithOut] = []
 
     class Config:
         from_attributes = True

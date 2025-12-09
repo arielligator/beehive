@@ -26,6 +26,11 @@ CREATE TABLE jobs (
     name TEXT NOT NULL UNIQUE
 );
 
+CREATE TABLE works_with (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL UNIQUE
+)
+
 
 -- Join tables
 CREATE TABLE person_departments (
@@ -43,3 +48,11 @@ CREATE TABLE person_jobs (
     FOREIGN KEY (person_id) REFERENCES people(id),
     FOREIGN KEY (job_id) REFERENCES jobs(id)
 );
+
+CREATE TABLE person_works_with (
+    person_id INTEGER NOT NULL,
+    works_with_id INTEGER NOT NULL,
+    PRIMARY KEY (person_id, works_with_id),
+    FOREIGN KEY (person_id) REFERENCES people(id),
+    FOREIGN KEY (job_id) REFERENCES works_with(id)
+)
