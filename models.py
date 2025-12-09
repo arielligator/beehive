@@ -1,3 +1,9 @@
+# define how data is stored in the database
+# control table structure
+# control column types
+# handle reading/writing DB data
+# convert between python objects and sql rows
+
 from sqlalchemy import Column, Integer, String
 from .database import Base
 

@@ -1,3 +1,9 @@
+# define what API receives and returns
+# control which fields are exposed to client
+# control which fields are required or optional
+# validate input data
+# prevent exposing sensitive information
+
 from pydantic import BaseModel
 from typing import Optional
 
@@ -6,7 +12,7 @@ class TalentBase(BaseModel):
     first_name: str
     last_name: str
     dob: Optional[str] = None
-    email: Optional[str] = None
+    email: EmailStr
     phone: Optional[str] = None
     address: Optional[str] = None
 
