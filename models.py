@@ -5,9 +5,9 @@
 # convert between python objects and sql rows
 # map python classes to SQLite tables
 
-from sqlalchemy import Column, Integer, String, Table, ForeignKey
+from sqlalchemy import Column, Integer, String, Table, ForeignKey, Date
 from sqlalchemy.orm import relationship
-from .database import Base
+from database import Base
 
 # association / join tables (many to many)
 
@@ -39,7 +39,7 @@ class Person(Base):
     id = Column(Integer, primary_key=True, index=True)
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
-    dob = Column(Date, nullable=True)
+    dob = Column(String, nullable=True)
     phone = Column(String, nullable=True)
     email = Column(String, nullable=True)
     address = Column(String, nullable=True)
@@ -58,7 +58,7 @@ class Person(Base):
         lazy="joined",
     )
     works_with = relationship(
-        "Works With",
+        "WorksWith",
         secondary=person_works_with,
         back_populates="people",
         lazy="joined",

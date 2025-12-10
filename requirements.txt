@@ -4,3 +4,6 @@ django
 pydantic
 sqlalchemy
 python-dotenv
+pydantic[email]
+pandas
+openpyxl

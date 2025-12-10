@@ -1,6 +1,8 @@
 -- Drop tables if they already exist (for development only)
+DROP TABLE IF EXISTS person_works_with;
 DROP TABLE IF EXISTS person_jobs;
 DROP TABLE IF EXISTS person_departments;
+DROP TABLE IF EXISTS works_with;
 DROP TABLE IF EXISTS jobs;
 DROP TABLE IF EXISTS departments;
 DROP TABLE IF EXISTS people;
@@ -10,7 +12,7 @@ CREATE TABLE people (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     first_name TEXT NOT NULL,
     last_name TEXT NOT NULL,
-    dob DATE,
+    dob TEXT,
     phone TEXT,
     email   TEXT,
     address TEXT
@@ -29,7 +31,7 @@ CREATE TABLE jobs (
 CREATE TABLE works_with (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL UNIQUE
-)
+);
 
 
 -- Join tables
@@ -54,5 +56,5 @@ CREATE TABLE person_works_with (
     works_with_id INTEGER NOT NULL,
     PRIMARY KEY (person_id, works_with_id),
     FOREIGN KEY (person_id) REFERENCES people(id),
-    FOREIGN KEY (job_id) REFERENCES works_with(id)
-)
+    FOREIGN KEY (works_with_id) REFERENCES works_with(id)
+);

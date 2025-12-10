@@ -13,6 +13,9 @@ def clean_value(value):
     cleaned = str(value).strip()
     return cleaned if cleaned and cleaned.lower() != 'nan' else None
 
+# helper function - convert pandas datetime to yyyy-mm-dd string format
+# def format_date(value):
+
 def main():
     # connect to the database
     conn = sqlite3.connect(DB_PATH)
@@ -25,6 +28,7 @@ def main():
     for _, row in df.iterrows():
         first_name = str(row["NAME"]).strip()
         last_name = str(row["SURNAME"]).strip()
+        dob = clean_value(row.get("DOB"))
         email = clean_value(row.get("EMAIL"))
         phone  = clean_value(row.get("PHONE"))
         address = clean_value(row.get("ADDRESS"))
