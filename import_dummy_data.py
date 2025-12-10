@@ -13,8 +13,15 @@ def clean_value(value):
     cleaned = str(value).strip()
     return cleaned if cleaned and cleaned.lower() != 'nan' else None
 
-# helper function - convert pandas datetime to yyyy-mm-dd string format
-# def format_date(value):
+# helper function for dates
+def format_date(value):
+    # convert pandas datetime to YYYY-MM-DD string format
+    if pd.isna(value):
+        return None
+    # format if already a datetime object
+    if isinstance(value, pd.Timestamp):
+        return value.strftime('%Y-%m-%d')
+    return clean_value(value)
 
 def main():
     # connect to the database
@@ -28,7 +35,7 @@ def main():
     for _, row in df.iterrows():
         first_name = str(row["NAME"]).strip()
         last_name = str(row["SURNAME"]).strip()
-        dob = clean_value(row.get("DOB"))
+        dob = format_date(row.get("DOB"))
         email = clean_value(row.get("EMAIL"))
         phone  = clean_value(row.get("PHONE"))
         address = clean_value(row.get("ADDRESS"))
@@ -36,10 +43,10 @@ def main():
         # insert into people table
         cursor.execute(
             """
-            INSERT INTO people (first_name, last_name, email, phone, address)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO people (first_name, last_name, dob, email, phone, address)
+            VALUES (?, ?, ?, ?, ?, ?)
             """,
-            (first_name, last_name, email, phone, address),
+            (first_name, last_name, dob, email, phone, address),
         )
         person_id = cursor.lastrowid
 
